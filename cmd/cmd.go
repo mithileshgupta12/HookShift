@@ -8,6 +8,7 @@ import (
 
 	"github.com/mithileshgupta12/hook-shift/api"
 	"github.com/mithileshgupta12/hook-shift/queue"
+	"github.com/mithileshgupta12/hook-shift/worker"
 )
 
 func Execute() {
@@ -17,19 +18,7 @@ func Execute() {
 
 	inMemoryQueue := queue.NewInMemoryQueue()
 
-	for range *workersAddr {
-		go func() {
-			for {
-				workerJob := inMemoryQueue.Dequeue()
-				err := workerJob.ProcessJob()
-				if err != nil {
-					inMemoryQueue.Nack(workerJob)
-					continue
-				}
-				inMemoryQueue.Ack(workerJob.JobID)
-			}
-		}()
-	}
+	worker.StartPool(inMemoryQueue, *workersAddr)
 
 	mux := http.NewServeMux()
 
