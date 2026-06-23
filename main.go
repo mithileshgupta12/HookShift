@@ -22,8 +22,14 @@ func main() {
 
 	for range *workersAddr {
 		go func() {
-			for job := range inMemoryQueue.Dequeue() {
-				log.Println(job)
+			for {
+				workerJob := inMemoryQueue.Dequeue()
+				err := workerJob.ProcessJob()
+				if err != nil {
+					inMemoryQueue.Nack(workerJob)
+					continue
+				}
+				inMemoryQueue.Ack(workerJob.JobID)
 			}
 		}()
 	}
