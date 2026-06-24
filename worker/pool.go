@@ -16,12 +16,14 @@ func StartPool(q queue.Queue, workerCount int, ctx context.Context, wg *sync.Wai
 					return
 				default:
 					workerJob := q.Dequeue(ctx)
-					err := workerJob.ProcessJob(ctx)
-					if err != nil {
-						q.Nack(workerJob)
-						continue
+					if workerJob != nil {
+						err := workerJob.ProcessJob(ctx)
+						if err != nil {
+							q.Nack(workerJob)
+							continue
+						}
+						q.Ack(workerJob.JobID)
 					}
-					q.Ack(workerJob.JobID)
 				}
 			}
 		})

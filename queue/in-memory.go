@@ -45,8 +45,7 @@ func (imq *InMemoryQueue) Dequeue(ctx context.Context) *job.Job {
 	select {
 	case <-ctx.Done():
 		return nil
-	default:
-		workerJob := <-imq.records
+	case workerJob := <-imq.records:
 		workerJob.Status = job.JobProcessing
 		imq.activeRecords.Store(workerJob.JobID, workerJob)
 		imq.failedRecords.Delete(workerJob.JobID)
