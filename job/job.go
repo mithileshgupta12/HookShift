@@ -2,6 +2,7 @@ package job
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -39,10 +40,15 @@ type Job struct {
 	Status          JobStatus
 }
 
-func (j *Job) ProcessJob() error {
+func (j *Job) ProcessJob(ctx context.Context) error {
 	client := http.Client{Timeout: time.Second * 10}
 
-	resp, err := client.Post(j.DestinationURL, "application/json", bytes.NewBuffer(j.Payload))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, j.DestinationURL, bytes.NewBuffer(j.Payload))
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}

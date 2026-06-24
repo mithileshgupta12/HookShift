@@ -1,6 +1,7 @@
 package queue
 
 import (
+	"context"
 	"errors"
 	"sync"
 	"time"
@@ -40,13 +41,17 @@ func (imq *InMemoryQueue) Enqueue(workerJob *job.Job) error {
 	return nil
 }
 
-func (imq *InMemoryQueue) Dequeue() *job.Job {
-	workerJob := <-imq.records
-
-	workerJob.Status = job.JobProcessing
-	imq.activeRecords.Store(workerJob.JobID, workerJob)
-	imq.failedRecords.Delete(workerJob.JobID)
-	return workerJob
+func (imq *InMemoryQueue) Dequeue(ctx context.Context) *job.Job {
+	select {
+	case <-ctx.Done():
+		return nil
+	default:
+		workerJob := <-imq.records
+		workerJob.Status = job.JobProcessing
+		imq.activeRecords.Store(workerJob.JobID, workerJob)
+		imq.failedRecords.Delete(workerJob.JobID)
+		return workerJob
+	}
 }
 
 func (imq *InMemoryQueue) Ack(jobID string) {

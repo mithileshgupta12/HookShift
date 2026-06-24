@@ -1,19 +1,29 @@
 package worker
 
-import "github.com/mithileshgupta12/hook-shift/queue"
+import (
+	"context"
+	"sync"
 
-func StartPool(q queue.Queue, workerCount int) {
+	"github.com/mithileshgupta12/hook-shift/queue"
+)
+
+func StartPool(q queue.Queue, workerCount int, ctx context.Context, wg *sync.WaitGroup) {
 	for range workerCount {
-		go func() {
+		wg.Go(func() {
 			for {
-				workerJob := q.Dequeue()
-				err := workerJob.ProcessJob()
-				if err != nil {
-					q.Nack(workerJob)
-					continue
+				select {
+				case <-ctx.Done():
+					return
+				default:
+					workerJob := q.Dequeue(ctx)
+					err := workerJob.ProcessJob(ctx)
+					if err != nil {
+						q.Nack(workerJob)
+						continue
+					}
+					q.Ack(workerJob.JobID)
 				}
-				q.Ack(workerJob.JobID)
 			}
-		}()
+		})
 	}
 }
