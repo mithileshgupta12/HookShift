@@ -15,14 +15,14 @@ Instead of writing custom retry loops, managing Goroutines, and risking frozen t
 - **Zero Dependencies:** No heavy message brokers required. Runs entirely in memory out of the box.
 - **Concurrent Worker Pool:** Dispatches hundreds of webhooks simultaneously without blocking.
 - **Exponential Backoff:** Automatically retries failed deliveries (up to 5 attempts) using a time-staggered backoff matrix to prevent DDoS-ing destination servers.
-- **Graceful Shutdown:** Catches `SIGTERM/SIGINT` and safely drains the worker pool and in-flight HTTP requests before shutting down—zero data loss during container restarts.
-- **Convention Over Configuration:** Configurable entirely via simple environment variables.
+- **Graceful Shutdown:** Catches `SIGTERM/SIGINT` and safely drains the worker pool and in-flight HTTP requests before shutting down—zero data loss during container restarts or server stops.
+- **Convention Over Configuration:** Configurable entirely via simple environment variables and CLI flags.
 
 ---
 
 ## 🚀 Quickstart
 
-You can run `hook-shift` in under 10 seconds. No Go toolchain required if you use Docker or pre-built binaries.
+You can run `hook-shift` in under 10 seconds.
 
 ### Option 1: Pre-compiled Binaries (Easiest)
 
@@ -32,13 +32,9 @@ Download the latest executable for your OS (Linux, macOS, Windows) from the [Rel
 ./hook-shift --port=9000 --workers=10
 ```
 
-### Option 2: Docker
+### Option 2: Build from Source
 
-```bash
-docker run -d -p 9000:9000 mithileshgupta12/hook-shift:latest --port=9000 --workers=10
-```
-
-### Option 3: Build from Source
+If you have the Go toolchain installed, you can clone and run it directly:
 
 ```bash
 git clone [https://github.com/mithileshgupta12/hook-shift.git](https://github.com/mithileshgupta12/hook-shift.git)
