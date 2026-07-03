@@ -2,9 +2,7 @@
 
 > A lightning-fast, zero-dependency webhook dispatcher built in Go.
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/mithileshgupta12/hook-shift)](https://goreportcard.com/report/github.com/mithileshgupta12/hook-shift)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Release](https://img.shields.io/github/v/release/mithileshgupta12/hook-shift)](https://github.com/mithileshgupta12/hook-shift/releases)
 
 **hook-shift** is a highly concurrent, fault-tolerant webhook delivery engine. It acts as a resilient middleman between your application and external APIs.
 
@@ -22,23 +20,14 @@ Instead of writing custom retry loops, managing Goroutines, and risking frozen t
 
 ## 🚀 Quickstart
 
-You can run `hook-shift` in under 10 seconds.
-
-### Option 1: Pre-compiled Binaries (Easiest)
-
-Download the latest executable for your OS (Linux, macOS, Windows) from the [Releases page](https://github.com/mithileshgupta12/hook-shift/releases), extract it, and run:
+You can clone and run `hook-shift` locally in under 10 seconds. You just need the Go toolchain installed.
 
 ```bash
-./hook-shift --port=9000 --workers=10
-```
-
-### Option 2: Build from Source
-
-If you have the Go toolchain installed, you can clone and run it directly:
-
-```bash
+# Clone the repository
 git clone [https://github.com/mithileshgupta12/hook-shift.git](https://github.com/mithileshgupta12/hook-shift.git)
 cd hook-shift
+
+# Run the server directly
 go run cmd/server/main.go --port=9000 --workers=10
 ```
 
